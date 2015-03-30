@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>OAuth2</display-name>
+  
+  <context-param>
+        <param-name>clientId</param-name>
+        <param-value>70be28f23a8734a8390b</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>clientSecret</param-name>
+        <param-value>209a8d31b0e377eb61582118bb13eeac4c934432</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>callbackUrl</param-name>
+        <param-value>http://www.yashinfo.com:8080/OAuth2/oauth2callback</param-value>
+    </context-param>
+  
+  <servlet>
+        <servlet-name>AuthorizationServlet</servlet-name>
+        <servlet-class>com.oauth.servlet.AuthorizationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AuthorizationCallbackServlet</servlet-name>
+        <servlet-class>com.oauth.servlet.AuthorizationCallbackServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>AuthorizationServlet</servlet-name>
+        <url-pattern>/authz</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthorizationCallbackServlet</servlet-name>
+        <url-pattern>/oauth2callback</url-pattern>
+    </servlet-mapping>
+    
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

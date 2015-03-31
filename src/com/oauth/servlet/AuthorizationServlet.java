@@ -10,8 +10,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
+
 /**
- * @author Misagh Moayyed (<a href="mailto:mmoayyed@unicon.net">mmoayyed@unicon.net</a>)
+ * @author Yashpal Choudhary (<a href="mailto:yash.choudhary@gmail.com">yash.choudhary@gmail.com</a>)
  */
 public class AuthorizationServlet extends AbstractOAuthServlet {
 
@@ -20,9 +22,15 @@ public class AuthorizationServlet extends AbstractOAuthServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-			resp.sendRedirect(client.getAuthServerUrl());
-        } catch (Exception e) {
+		try {
+			if (req.getParameter("git") != null) {
+				resp.sendRedirect(client.getAuthServerUrl());
+			} else if (req.getParameter("isam") != null) {
+				resp.sendRedirect(iSAMClient.getAuthServerUrl());
+			} else {
+				resp.sendError(HttpStatus.SC_FORBIDDEN);
+			}
+		} catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

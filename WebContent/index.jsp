@@ -8,8 +8,13 @@
 </head>
 <body>
 	<div align="center">
-		<h3>OAuth 2.0 Test Application: Using CAS in OAuth Server Mode</h3>
-		<a href="authz" class="button">Login using Github OAuth 2.0</a>
+		<h3>OAuth 2.0 Test Application: Using GitHub in OAuth Server Mode</h3>
+		<a href="authz?git=true" class="button">Login using Github OAuth 2.0</a>
+	</div>
+	<br><br>
+	<div align="center">
+		<h3>OAuth 2.0 Test Application: Using ISAM in OAuth Server Mode</h3>
+		<a href="authz?isam=true" class="button">Login using ISAM OAuth 2.0</a>
 	</div>
 </body>
 </html>

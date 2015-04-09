@@ -32,7 +32,10 @@ public abstract class AbstractOAuthServlet extends HttpServlet {
         String callbackUrl = config.getServletContext().getInitParameter("callbackUrl");
 
         client = new GitHubAuthClient(clientId, clientSecret, callbackUrl);
-        iSAMClient = new ISAMAuthClient();
+        String clientIdISAM = config.getServletContext().getInitParameter("clientId-isam");
+        String clientSecretISAM = config.getServletContext().getInitParameter("clientSecret-isam");
+        String callbackUrlISAM = config.getServletContext().getInitParameter("callbackUrl-isam");
+        iSAMClient = new ISAMAuthClient(clientIdISAM,clientSecretISAM,callbackUrlISAM);
     }
 
 }

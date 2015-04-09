@@ -14,7 +14,22 @@
 
     <context-param>
         <param-name>callbackUrl</param-name>
-        <param-value>http://www.yashinfo.com:8080/OAuth2/oauth2callback</param-value>
+        <param-value>http://localhost:8080/OAuth2/gitoauth2callback</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>clientId-isam</param-name>
+        <param-value>JYPRUGzFWjzuyZwXXMtu</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>clientSecret-isam</param-name>
+        <param-value>QSiDalKgs0PIRSiwl0hi</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>callbackUrl-isam</param-name>
+        <param-value>http://CTCDTL01HS1010:8080/OAuth2/isamoauth2callback</param-value>
     </context-param>
   
   <servlet>
@@ -32,7 +47,11 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AuthorizationCallbackServlet</servlet-name>
-        <url-pattern>/oauth2callback</url-pattern>
+        <url-pattern>/gitoauth2callback</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthorizationCallbackServlet</servlet-name>
+        <url-pattern>/isamoauth2callback</url-pattern>
     </servlet-mapping>
     
   <welcome-file-list>

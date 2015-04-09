@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -39,7 +40,15 @@ public class AuthorizationCallbackServlet extends AbstractOAuthServlet {
            if(req.getParameter("code") != null) {
         	   HttpClient httpclient = new DefaultHttpClient();
                try {
-                   HttpGet httpget = new HttpGet(client.getAccessTokenUrl(req.getParameter("code")));
+            	   HttpGet httpget = null;
+            	   if (req.getRequestURI().indexOf("git") > 0) {
+            		   httpget = new HttpGet(client.getAccessTokenUrl(req.getParameter("code")));
+					} else if (req.getRequestURI().indexOf("isam") > 0) {
+						httpget = new HttpGet(iSAMClient.getAccessTokenUrl(req.getParameter("code")));
+					} else {
+						resp.sendError(HttpStatus.SC_FORBIDDEN);
+					}
+						//httpget = new HttpGet(client.getAccessTokenUrl(req.getParameter("code")));
                    ResponseHandler<String> responseHandler = new BasicResponseHandler();
                    String responseBody = httpclient.execute(httpget, responseHandler);
                    log(responseBody);

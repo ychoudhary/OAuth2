@@ -26,6 +26,7 @@ public class AuthorizationServlet extends AbstractOAuthServlet {
 			if (req.getParameter("git") != null) {
 				resp.sendRedirect(client.getAuthServerUrl());
 			} else if (req.getParameter("isam") != null) {
+				System.err.println(iSAMClient.getAuthServerUrl());
 				resp.sendRedirect(iSAMClient.getAuthServerUrl());
 			} else {
 				resp.sendError(HttpStatus.SC_FORBIDDEN);

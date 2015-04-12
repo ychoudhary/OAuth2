@@ -16,18 +16,27 @@ package com.oauth.servlet;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class AuthorizationCallbackServlet extends AbstractOAuthServlet {
 
@@ -36,24 +45,39 @@ public class AuthorizationCallbackServlet extends AbstractOAuthServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+        	System.err.println(req.getQueryString());
+        	System.err.println(req.getRequestURI());
             String token = null;
+            String responseBody = null;
            if(req.getParameter("code") != null) {
         	   HttpClient httpclient = new DefaultHttpClient();
+        	   String authCode= req.getParameter("code");
+        	   ResponseHandler<String> responseHandler = new BasicResponseHandler();
                try {
-            	   HttpGet httpget = null;
             	   if (req.getRequestURI().indexOf("git") > 0) {
-            		   httpget = new HttpGet(client.getAccessTokenUrl(req.getParameter("code")));
+            		   HttpGet httpget = new HttpGet(client.getAccessTokenUrl(authCode));
+            		   
+                       responseBody = httpclient.execute(httpget, responseHandler);
 					} else if (req.getRequestURI().indexOf("isam") > 0) {
-						httpget = new HttpGet(iSAMClient.getAccessTokenUrl(req.getParameter("code")));
+						System.err.println(iSAMClient.getAccessTokenUrl());
+						HttpPost httpPost = new HttpPost(iSAMClient.getAccessTokenUrl());
+						httpPost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
+						
+						System.err.println("Post Params--------");
+						for (Iterator<NameValuePair> postParamIter = iSAMClient.getPostParams(authCode).iterator(); postParamIter.hasNext();) {
+							NameValuePair postParam = postParamIter.next();
+							System.err.println(postParam.getName() +"="+postParam.getValue());
+						}
+						httpPost.setEntity(new UrlEncodedFormEntity(iSAMClient.getPostParams(authCode)));
+						System.err.println("Post Params--------");
+						responseBody = httpclient.execute(httpPost,responseHandler);
 					} else {
 						resp.sendError(HttpStatus.SC_FORBIDDEN);
 					}
-						//httpget = new HttpGet(client.getAccessTokenUrl(req.getParameter("code")));
-                   ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                   String responseBody = httpclient.execute(httpget, responseHandler);
-                   log(responseBody);
-                   int accessTokenStartIndex = responseBody.indexOf("access_token=") + "access_token=".length();
-                   token = responseBody.substring(accessTokenStartIndex,responseBody.indexOf("&",accessTokenStartIndex));
+            	   
+                   System.err.println(responseBody);
+                   token = parseJsonString(responseBody);
+                   req.setAttribute("Response", responseBody);
                } catch (ClientProtocolException e) {
                    e.printStackTrace();
                } catch (IOException e) {
@@ -90,6 +114,16 @@ public class AuthorizationCallbackServlet extends AbstractOAuthServlet {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static void main(String args[]) throws JSONException{
+    	String jsonData = "{\"access_token\":\"0GI1fqgVMT9Hbp89iExn\",\"scope\":\"profile\",\"expires_in\":3599,\"token_type\":\"bearer\",\"refresh_token\":\"lUANXQVCAlJr1P93YW2Sc513dWn0szvQ5aBGvAzi\"}";
+    	System.err.println(parseJsonString(jsonData));
+    }
+    
+    private static String parseJsonString(String jsonData) throws JSONException{
+    	final JSONObject obj = new JSONObject(jsonData);
+    	return obj.getString("access_token");
     }
 
 }

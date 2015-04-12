@@ -58,6 +58,9 @@ public class AuthorizationCallbackServlet extends AbstractOAuthServlet {
             		   HttpGet httpget = new HttpGet(client.getAccessTokenUrl(authCode));
             		   
                        responseBody = httpclient.execute(httpget, responseHandler);
+                       int accessTokenStartIndex = responseBody.indexOf("access_token=") + "access_token=".length();
+                       token = responseBody.substring(accessTokenStartIndex,responseBody.indexOf("&",accessTokenStartIndex));
+                       
 					} else if (req.getRequestURI().indexOf("isam") > 0) {
 						System.err.println(iSAMClient.getAccessTokenUrl());
 						HttpPost httpPost = new HttpPost(iSAMClient.getAccessTokenUrl());
@@ -71,12 +74,11 @@ public class AuthorizationCallbackServlet extends AbstractOAuthServlet {
 						httpPost.setEntity(new UrlEncodedFormEntity(iSAMClient.getPostParams(authCode)));
 						System.err.println("Post Params--------");
 						responseBody = httpclient.execute(httpPost,responseHandler);
+						token = parseJsonString(responseBody);
 					} else {
 						resp.sendError(HttpStatus.SC_FORBIDDEN);
 					}
-            	   
                    System.err.println(responseBody);
-                   token = parseJsonString(responseBody);
                    req.setAttribute("Response", responseBody);
                } catch (ClientProtocolException e) {
                    e.printStackTrace();

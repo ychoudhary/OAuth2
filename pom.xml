@@ -46,6 +46,7 @@
         <configuration>
           <warSourceDirectory>WebContent</warSourceDirectory>
           <failOnMissingWebXml>false</failOnMissingWebXml>
+          <warName>OAuth2</warName>
         </configuration>
       </plugin>
     </plugins>
